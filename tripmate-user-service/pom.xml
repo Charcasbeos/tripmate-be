@@ -22,8 +22,8 @@
 	</developers>
 	<scm>
 		<connection/>
-		<developerConnection/>
 		<tag/>
+		<developerConnection/>
 		<url/>
 	</scm>
 	<properties>

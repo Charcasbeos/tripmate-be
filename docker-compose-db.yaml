@@ -8,3 +8,12 @@ services:
       - 'POSTGRES_USER=root'
     ports:
       - '5432:5432'
+    volumes: 
+      - user_service_tripmate_db_data:/var/lib/postgresql
+    networks:
+      - microservices-net
+volumes:
+  user_service_tripmate_db_data:
+
+    
+  

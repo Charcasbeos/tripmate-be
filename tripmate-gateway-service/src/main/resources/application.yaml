@@ -1,3 +1,53 @@
+server:
+  port: 8080
 spring:
   application:
     name: tripmate-gateway-service
+  config:
+    import: "optional:consul:"
+  cloud:
+    # Register Gateway Service to Consul
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enable: true
+        register: true
+        service-name: ${spring.application.name}
+        # health-check-path: /actuator/health
+        port: ${server.port}
+        health-check-interval: 10s
+        hostname: localhost
+        health-check-url: "http://host.docker.internal:${server.port}/actuator/health"
+    
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+              lower-case-service-id: true
+    #       globalcors:
+    #         corsConfigurations:
+    #           '[/**]':
+    #             allowedOrigins: "*"
+    #             allowedMethods: "*"
+    #             allowedHeaders: "*"
+    #             allowCredentials: false
+          routes:
+            - id: user-service
+              uri: lb://tripmate-user-service
+              predicates:
+                - Path=/api/v1/users/**, /api/v1/auth/**
+              # Thêm các route khác nếu cần thiết
+              # filters:
+                # - AuthenticationFilter
+management:
+  endpoints: 
+    web:
+      exposure: 
+        include: health, info
+      
+
+    
+

@@ -1,13 +1,36 @@
+server:
+  port: 8090
 spring:
   application:
     name: tripmate-user-service
+  config:
+    import: "optional:consul:"
+  cloud:
+    # Register Gateway Service to Consul
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enable: true
+        register: true
+        service-name: ${spring.application.name}
+        # health-check-path: /actuator/health
+        port: ${server.port}
+        health-check-interval: 10s
+        hostname: localhost
+        health-check-url: "http://host.docker.internal:${server.port}/actuator/health"
   security:
     # user:
     #   name: user
     #   password: 123456
     enabled: false
-eureka:
-  client: 
-    enabled: false
-    register-with-eureka: false
-    fetch-registry: false
+  datasource: 
+    url: jdbc:postgresql://localhost:5432/tripmate-user-service-db
+    username: root
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+management:
+  endpoints: 
+    web:
+      exposure: 
+        include: health, info
